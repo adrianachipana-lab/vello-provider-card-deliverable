@@ -152,7 +152,7 @@ Rules:
 
 - Use semantic HTML: `<article>` for the card, `<h2>` for the provider name with
   an `id` for `aria-labelledby`, `<button>` for actions (not `<div onClick>`).
-- All buttons: minimum 44×44px target and visible `:focus-visible` styling using
+- All buttons: minimum 44x44px target and visible `:focus-visible` styling using
   `box-shadow: var(--focus-ring)`.
 - Never rely on color alone to communicate status. Icons that repeat adjacent text
   are decorative: `aria-hidden="true"`.

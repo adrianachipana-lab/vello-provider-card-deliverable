@@ -9,7 +9,7 @@ Scope: components under `src/components/vello/**`. Applies to NeighborCard and a
 - Fonts have fixed roles: Bricolage Grotesque = display/names only. Hanken Grotesk = all
   body/UI copy. JetBrains Mono = numeric/data values only (price, distance, counts).
   Never use JetBrains Mono for a label or a name; never use Bricolage for body copy.
-- Spacing follows a 4px rhythm. Radii are generous (prefer 12–20px, never 0 or fully square).
+- Spacing follows a 4px rhythm. Radii are generous (prefer 12-20px, never 0 or fully square).
 
 ## Trust signals are not interchangeable
 - `Rating` (stars) and availability status are different signals and must render
@@ -25,7 +25,7 @@ Scope: components under `src/components/vello/**`. Applies to NeighborCard and a
   the outline without replacing it.
 - Rating and badges must have an `aria-label` or equivalent text alternative; they are not
   purely decorative.
-- Minimum tap target 44×44px on any button/icon-button, even if the visual size is smaller.
+- Minimum tap target 44x44px on any button/icon-button, even if the visual size is smaller.
 - Verify color contrast for any new text/background pairing against the six tokens above
   before shipping it — don't assume a token pair is accessible just because it's on-brand.
 

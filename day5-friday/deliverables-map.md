@@ -25,12 +25,12 @@ Manual asks for:
 Current artifact coverage:
 
 - `CLAUDE.md` captures design ownership boundaries as guardrails.
-- `design-fidelity-audit.md` reframes pricing and vouches as data-contract/system decisions, not just UI copy.
+- `design-fidelity-audit.md` reframes the neighbor data shape and distance formats as data-contract/system decisions, not just UI copy.
 
 Still useful to add for presentation:
 
 - A short spoken reflection: "Design owns the product/user-experience decision; engineering contributes feasibility, state modeling, data contracts, and verification."
-- Best system-decision example: provider pricing. A UI label like `$18/walk` turned into a discriminated data model: `fixed`, `range`, or `quote`.
+- Best system-decision example: the neighbor data shape. A neighbor card needs photo (not initials), availability status, multiple distance formats (walk/blocks/mi), and unit pricing — each of these is a schema decision, not just a visual one.
 
 ## Tuesday: Discovery & Research
 
@@ -42,7 +42,7 @@ Manual asks for:
 Current artifact coverage:
 
 - We do not have transcripts in this repo, so we cannot truthfully claim a transcript-backed synthesis.
-- `design-fidelity-audit.md` does capture interview-derived product implications mentioned in the component brief: trust/vouches and non-fixed pricing.
+- `design-fidelity-audit.md` does capture product implications mentioned in the component brief: trust signals, availability state, and distance representation.
 
 Presentation-safe framing:
 
@@ -50,22 +50,24 @@ Presentation-safe framing:
 - Do not invent research quotes.
 - Use the verified product assumptions only:
   - Requesters need trust signals that are local and attributable.
-  - Some services cannot be priced upfront.
+  - Neighbors have different availability states that must be communicated.
+  - Distance can be expressed as walk time, blocks, or miles depending on context.
   - Verification must be modeled separately from rating/reputation.
 
 Candidate problem statements:
 
-1. Requesters hiring local help need a way to distinguish identity verification, aggregate rating, and named neighbor trust because those signals answer different trust questions.
-2. Requesters comparing providers need pricing that supports fixed, ranged, and quote-required services because not every local service can be accurately priced before inspection.
+1. Requesters browsing neighbors need a way to distinguish identity verification, aggregate rating, and availability because those signals answer different trust and timing questions.
+2. Requesters comparing neighbors across service categories need distance and pricing that adapts to context because "6 min walk" and "0.3 mi" serve different user needs, and "from $24 / walk" is different from a flat rate.
 
 Entities implied:
 
-- `Provider`
+- `Neighbor`
 - `Verification`
-- `Vouch`
+- `Availability`
 - `Rating`
 - `Pricing`
 - `Service`
+- `Distance`
 - `Request`
 - `Booking`
 - `Neighborhood`
@@ -80,26 +82,26 @@ Manual asks for:
 
 Current artifact coverage:
 
-- The implemented component and integration exposed a UX-architecture issue: the card cannot be treated as a standalone page if the product location is Home provider browsing.
+- The implemented component and integration exposed a UX-architecture issue: the card cannot be treated as a standalone page if the product location is Home neighbor browsing.
 - `vello-design-qa.md` identifies IA issues across Home, request detail, booking, profile, and admin.
 
 Recommended demo flow to explain:
 
 1. User lands on Home.
-2. User sees search, open request, and provider options.
-3. User compares providers using trust signals.
-4. User taps ProviderCard.
-5. System starts booking/message path.
+2. User sees search, open request, and neighbor options.
+3. User browses neighbors in "Trusted on your block".
+4. User taps NeighborCard.
+5. System opens the neighbor's profile.
 
 State/API implications:
 
 | State | Trigger | UI | Data/API implication |
 | --- | --- | --- | --- |
-| Provider available | Provider has availability | Show request/book CTA | Provider availability state required |
-| No vouches | No local completed bookings | Neutral trust copy | `vouches: []` must be valid |
-| Identity verified | Verification approved | Verified badge/shield | Verification status stored separately |
-| Quote required | Price unknown | Show quote label | Pricing type must support `quote` |
-| Booking started | User taps CTA | Toast/status feedback | Booking intent or draft booking event |
+| Neighbor available | `available: true` | Show coral "Available" badge | Availability state required in data |
+| Neighbor unavailable | `available: false` | No badge shown | Badge must not render without flag |
+| Identity verified | Verification approved | SVG shield mark on avatar | Verification status stored separately |
+| Distance format | User preference or proximity | "6 min walk" / "4 blocks" / "0.3 mi" | Three distance fields needed: `walk`, `blocks`, `mi` |
+| Featured neighbor | `featured: true` | `nb--featured` class adds emphasis | Featured flag in data |
 
 ## Thursday: UI Craft, Systems & Critique
 
@@ -114,16 +116,18 @@ Current artifact coverage:
 
 - `design-fidelity-audit.md` is the main token/a11y audit.
 - `vello-design-qa.md` is the broader product-design QA.
-- `before/ProviderCard-before.jsx` preserves the initial AI-generated version.
-- `src/components/ProviderCard.jsx` preserves the corrected React component.
+- `before/NeighborCard-before.jsx` preserves the initial AI-generated version.
+- `src/components/NeighborCard.jsx` preserves the corrected React component.
 
 Strongest findings to present:
 
-- Raw hex and primitive-token usage drifted from semantic tokens.
-- Vouches were initially treated as strings instead of structured data.
-- Pricing was initially too simplistic.
-- The first integrated version passed rendering but failed design context.
-- The corrected integration reused Vello's native `section` / `neighbors` / `nb` anatomy.
+- Initials instead of real photos.
+- ShieldCheck icon instead of the custom SVG shield mark.
+- No availability state in the first version.
+- Single star instead of 5-star rendering.
+- MapPin instead of Footprints icon.
+- Raw hex and Tailwind classes instead of semantic tokens and Vello CSS classes.
+- `<div onClick>` instead of `<button>`.
 
 ## Friday: Faithful Code + Proof
 
@@ -137,33 +141,30 @@ Manual asks for:
 
 Current artifact coverage:
 
-- Working standalone component: `src/components/ProviderCard.jsx`.
-- Working integrated prototype: `Vello-Prototype-with-provider-card.html`.
-- Integration script: `vello-provider-card-integration.js`.
+- Working standalone component: `src/components/NeighborCard.jsx`.
 - Guardrail: `CLAUDE.md`.
 - Fidelity audit: `design-fidelity-audit.md`.
 - Broader design QA: `vello-design-qa.md`.
-- Before version: `before/ProviderCard-before.jsx`.
+- Before version: `before/NeighborCard-before.jsx`.
 
 Most-used artifact/guardrail:
 
 - The most-used and most important "skill" was `CLAUDE.md`.
-- It acted as the local Claude guardrail for semantic tokens, trust semantics, data contracts, accessibility, and prototype integration.
-- It was improved after failures: first to prevent token drift, then to prevent demo-shell/overlay integrations that did not fit Vello's actual screen composition.
+- It acted as the local Claude guardrail for semantic tokens, visual anatomy (CSS classes, icons, elements), data contracts, accessibility, and prototype integration.
+- It was improved after failures: first to prevent token drift, then to enforce real photos, the SVG shield, availability state, 5-star rendering, and the correct distance icon.
 
 ## Final Demo Narrative
 
 Recommended sequence:
 
 1. Open the original Vello prototype.
-2. Explain that the first component was a standalone demo, not a real integration.
-3. Show `before/ProviderCard-before.jsx` and identify token/data/a11y drift.
+2. Explain that the first component drifted on photos, icons, states, and data shape.
+3. Show `before/NeighborCard-before.jsx` and identify token/data/a11y drift.
 4. Show `CLAUDE.md` as the guardrail used to reduce drift.
-5. Show the integrated prototype with the `Actual` / `Mejorada` toggle.
-6. Explain that `Actual` is the baseline integration and `Mejorada` is the proposed design direction.
-7. Show `design-fidelity-audit.md` as proof of verification.
-8. Show `vello-design-qa.md` as broader product/design critique.
-9. Close with the system decisions engineering contributed: pricing model, vouch model, verification state, UI states.
+5. Show the corrected component with the state toggle (Available, Not available, Perfect rating).
+6. Show `design-fidelity-audit.md` as proof of verification.
+7. Show `vello-design-qa.md` as broader product/design critique.
+8. Close with the system decisions engineering contributed: neighbor data shape, distance formats, availability modeling, verified mark.
 
 ## What Not To Claim
 

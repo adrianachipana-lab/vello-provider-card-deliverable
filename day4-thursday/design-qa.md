@@ -1,7 +1,7 @@
 # Vello Design QA
 
 Date: 2026-09-16
-Scope: Original Vello prototype plus the integrated ProviderCard inside the requester flow.
+Scope: Original Vello prototype plus the integrated NeighborCard inside the requester flow.
 
 ## Executive read
 
@@ -10,7 +10,7 @@ Vello already has a strong visual language: warm neighborhood palette, rounded b
 The highest-impact improvements are:
 
 1. Reduce competing surfaces on Home.
-2. Make trust signals more systematic across provider cards, request replies, and profile screens.
+2. Make trust signals more systematic across neighbor cards, request replies, and profile screens.
 3. Strengthen booking decision hierarchy.
 4. Separate requester, provider, and admin modes more clearly.
 5. Turn prototype-only feedback into realistic product states.
@@ -19,29 +19,29 @@ The highest-impact improvements are:
 
 ### 1. Home has too many high-emphasis modules
 
-The Home screen currently stacks a large greeting, search, category chips, open request, provider list, map action, and popular services. Each module is visually polished, but the page has several "main things" competing for attention.
+The Home screen currently stacks a large greeting, search, category chips, open request, neighbor list, map action, and popular services. Each module is visually polished, but the page has several "main things" competing for attention.
 
 Design risk: users may not know whether Vello wants them to search, open their existing request, book a neighbor, or browse categories.
 
 Recommendation:
 
 - Keep search and open request as the two top-priority elements.
-- Move category chips closer to the provider list as filters, not as a separate hero-like module.
-- Make the integrated ProviderCard live inside `Trusted on your block`, not as its own top-level promotional section once QA is complete.
-- Use one primary action path per viewport: search/request on top, provider browse below.
+- Move category chips closer to the neighbor list as filters, not as a separate hero-like module.
+- Make the integrated NeighborCard live inside `Trusted on your block`, not as its own top-level promotional section once QA is complete.
+- Use one primary action path per viewport: search/request on top, neighbor browse below.
 
-### 2. Provider trust signals are visually inconsistent
+### 2. Neighbor trust signals are visually inconsistent
 
-Trust appears as ratings, verification badges, vouches, available status, distance, and neighbor response counts. These signals are good individually, but each screen presents them differently.
+Trust appears as ratings, verification badges, availability status, distance, bio descriptions, and pricing. These signals are good individually, but each screen presents them differently.
 
 Design risk: Vello's biggest product promise is trust, but the UI makes users re-interpret trust on every screen.
 
 Recommendation:
 
-- Define a trust row pattern: `Verified`, `distance`, `rating`, `named vouch`.
-- Use the same order on Home provider cards, request responders, and provider profile.
+- Define a trust row pattern: `Verified mark`, `distance`, `rating`, `availability`.
+- Use the same order on Home neighbor cards, request responders, and neighbor profile.
 - Keep identity verification visually separate from popularity/rating.
-- Avoid oversized verification chips inside compact cards; use a small badge or shield mark plus text only when space allows.
+- Avoid oversized verification chips inside compact cards; use the small SVG shield mark on the avatar.
 
 ### 3. Booking flow has good structure but too much form weight
 
@@ -102,8 +102,8 @@ Design risk: those messages break immersion during design review.
 Recommendation:
 
 - Replace prototype-only toasts with product-real language.
-- Example: "Map view is next up" becomes "Map view unavailable in this demo" only if demo clarity matters, or "Showing nearby providers as a list" for product realism.
-- Use success states to reinforce trust: "Request sent to Tomas. You will only be charged after booking is confirmed."
+- Example: "Map view is next up" becomes "Map view unavailable in this demo" only if demo clarity matters, or "Showing nearby neighbors as a list" for product realism.
+- Use success states to reinforce trust: "Request sent to Maya. You will only be charged after booking is confirmed."
 
 ### 8. Visual rhythm is warm but sometimes over-carded
 
@@ -114,35 +114,29 @@ Design risk: Vello's friendly brand starts to feel busy.
 Recommendation:
 
 - Use full-width unframed section bands for grouping.
-- Reserve raised cards for tappable providers, bookings, and important request containers.
+- Reserve raised cards for tappable neighbors, bookings, and important request containers.
 - Reduce elevation on secondary cards.
 - Avoid adding standalone new sections for individual components unless the section has product meaning.
 
-## ProviderCard QA result
+## NeighborCard QA result
 
-The integrated ProviderCard initially failed design fidelity twice:
+The integrated NeighborCard initially failed design fidelity in several ways:
 
-1. It appeared as a launcher/overlay, which made it feel outside the app.
-2. It then appeared as a large standalone section, which made it overpower the Home screen.
+1. It used initials instead of real photos.
+2. It used a generic ShieldCheck icon instead of the custom SVG shield mark.
+3. It had no availability state.
+4. It rendered a single star instead of five.
+5. It used the wrong icon for distance.
 
-The current direction is better: it uses Vello's native provider-list anatomy. The next refinement should be placing it back into `Trusted on your block` after review, so it behaves as one provider among others rather than a highlighted QA artifact.
-
-## A/B design comparison added
-
-The integrated prototype now includes a floating comparison control:
-
-- `Actual`: inserts the ProviderCard into the existing `Trusted on your block` list with minimal visual changes. This shows the safest baseline integration.
-- `Mejorada`: keeps the card easy to find in a `Trusted provider` section, but gives it a more intentional Vello treatment: contained size, stronger vouch hierarchy, clearer CTA, and less "raw injected card" feeling.
-
-Use `Actual` to compare against the existing provider-list pattern. Use `Mejorada` to judge the proposed improved design direction.
+The current direction is better: it uses Vello's native neighbor-card anatomy (`nb`, `nb__body`, `nb__meta`, `nb__tap`, `nb__avatar`, `nb__vmark`). The next refinement should be placing it back into `Trusted on your block` after review, so it behaves as one neighbor among others rather than a highlighted QA artifact.
 
 ## Recommended next pass
 
-1. Move ProviderCard into the existing `Trusted on your block` list permanently.
-2. Standardize trust rows across provider cards and responder cards.
-3. Compress Home so search/open request/provider browse are the only primary surfaces.
-4. Lighten booking by making optional fields progressive.
-5. Move admin out of requester profile into a role/demo switch.
+1. Standardize trust signals across neighbor cards and responder cards.
+2. Compress Home so search/open request/neighbor browse are the only primary surfaces.
+3. Lighten booking by making optional fields progressive.
+4. Move admin out of requester profile into a role/demo switch.
+5. Confirm distance format thresholds with design (when to show walk vs blocks vs miles).
 
 ## Design bar for future components
 
@@ -151,5 +145,5 @@ Future Vello components should pass these checks before implementation is accept
 - Does it live in a real product location, not a demo surface?
 - Does it reuse an existing screen pattern before adding new layout CSS?
 - Does it preserve Home hierarchy instead of creating another top-level module?
-- Does it express trust using the same vocabulary as other provider surfaces?
+- Does it express trust using the same vocabulary as other neighbor surfaces?
 - Does it look correct inside a 375px mobile frame without becoming the whole screen?
