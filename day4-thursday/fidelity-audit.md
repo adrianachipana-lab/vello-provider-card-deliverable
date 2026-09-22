@@ -13,7 +13,7 @@ the issue, violated rule, and correction. Untraceable values are questions for d
 | --- | --- | --- | --- |
 | Avatar photo | Real `<img>` with `nb__photo` class, circular | Used initials in a colored circle (`#16462F` bg) | Failure. The prototype uses actual photos, not initials. Replaced with `<img>` sourced from `neighbor.photo`. |
 | Verified mark | SVG shield path positioned at bottom-right of avatar via `nb__vmark` | Lucide `ShieldCheck` icon, wrong semantic | Drift. The design uses a custom SVG shield with a checkmark, not a generic icon. Replaced with the correct SVG `VerifiedMark` component using `var(--brand-primary)`. |
-| Available badge | Coral dot + "Available" text, using `nb__avail` class and `--accent` token | Not rendered at all — no availability state in data | Failure. The first version had no `available` field and no badge. Added `nb__avail` with the coral dot styled via `var(--accent)`. |
+| Available badge | Green dot + "Available" text, using `nb__avail` class with `--brand-primary` and `--surface-brand-tint` tokens | Not rendered at all — no availability state in data | Failure (two rounds). The first version had no `available` field and no badge. The second version added the badge but used coral/red (`--accent`) for the color — a semantic error caught during visual review: "Available" is a positive status and must be green, not red. Corrected to use `var(--brand-primary)` for text/dot and `var(--surface-brand-tint)` for background. |
 | Bio text | `nb__bio` class, `--text-body` color | Generic `text-sm opacity-70` with raw `#1B1C18` | Drift. Opacity hacks instead of the semantic `--text-body` token. Replaced with `nb__bio` class consuming the correct token. |
 | Price display | "from $24 / walk" format via `nb__price` class | `$24/walk` — missing "from" prefix, no unit separation | Drift. The prototype always shows "from $X / unit". Corrected to match the format with `nb__price` class. |
 | Distance pill | Footprints icon + "6 min walk" in `nb__walk` class, pill shape | MapPin icon + "6 min" — wrong icon, no pill, truncated label | Failure. Wrong icon (MapPin instead of Footprints), missing the "walk" suffix, and no pill styling. Replaced with `Footprints` icon, full label, and `nb__walk` pill. |
@@ -45,6 +45,24 @@ price, unit, verified, available, featured }`.
 The first version also omitted the "from" prefix on pricing, which matters — it
 signals that the listed price is a starting point, not a guarantee. This is a
 product-copy decision, not just formatting.
+
+## Errors found during visual review (image inspection)
+
+After the initial corrections, a visual review of the rendered component screenshot revealed
+additional errors that the code-level audit missed:
+
+1. **"Available" badge in red/coral instead of green.** The badge used `--accent` (coral-500,
+   `#F0623B`) for both the dot and text. "Available" is a positive status — using red
+   communicates the opposite meaning. Corrected to `--brand-primary` (green-600) with
+   `--surface-brand-tint` (green-100) background. This was a semantic color error: the
+   token was technically valid (`--accent` exists) but semantically wrong for this context.
+
+2. **Profile view had the same coral error.** The `.profile-available` and `.profile-dot`
+   classes replicated the same red "Available" badge. Corrected to match the card fix.
+
+These errors highlight a gap the guardrail did not catch: semantic appropriateness of color
+for status indicators. The guardrail enforced using design tokens but did not enforce that
+a positive status must use a positive color. This is a product-logic rule, not a token rule.
 
 ## What the first version got right
 

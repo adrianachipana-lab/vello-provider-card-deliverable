@@ -158,8 +158,8 @@ button { font: inherit; }
   gap: 5px;
   padding: 3px 9px;
   border-radius: var(--radius-pill);
-  background: rgba(240, 98, 59, 0.1);
-  color: var(--accent);
+  background: var(--surface-brand-tint);
+  color: var(--brand-primary);
   font-size: 12px;
   font-weight: 600;
 }
@@ -168,7 +168,7 @@ button { font: inherit; }
   width: 6px;
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--accent);
+  background: var(--brand-primary);
 }
 .nb__bio {
   margin: 6px 0 0;
@@ -280,10 +280,10 @@ button { font: inherit; }
 .profile-available {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 3px 10px; border-radius: var(--radius-pill);
-  background: rgba(240, 98, 59, 0.1); color: var(--accent);
+  background: var(--surface-brand-tint); color: var(--brand-primary);
   font-size: 12px; font-weight: 600;
 }
-.profile-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--accent); }
+.profile-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--brand-primary); }
 .profile-stats {
   display: flex; gap: 16px; margin-top: 20px; padding: 14px 0;
   border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);

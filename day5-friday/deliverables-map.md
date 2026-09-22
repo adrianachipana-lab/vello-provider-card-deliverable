@@ -97,7 +97,7 @@ State/API implications:
 
 | State | Trigger | UI | Data/API implication |
 | --- | --- | --- | --- |
-| Neighbor available | `available: true` | Show coral "Available" badge | Availability state required in data |
+| Neighbor available | `available: true` | Show green "Available" badge (`--brand-primary` dot + text, `--surface-brand-tint` bg) | Availability state required in data. Note: initial version incorrectly used coral/red — caught during visual review. |
 | Neighbor unavailable | `available: false` | No badge shown | Badge must not render without flag |
 | Identity verified | Verification approved | SVG shield mark on avatar | Verification status stored separately |
 | Distance format | User preference or proximity | "6 min walk" / "4 blocks" / "0.3 mi" | Three distance fields needed: `walk`, `blocks`, `mi` |
@@ -128,6 +128,7 @@ Strongest findings to present:
 - MapPin instead of Footprints icon.
 - Raw hex and Tailwind classes instead of semantic tokens and Vello CSS classes.
 - `<div onClick>` instead of `<button>`.
+- **"Available" badge in coral/red instead of green** — caught during visual review of the rendered screenshot. The badge used a valid token (`--accent`) but the color was semantically wrong for a positive status. This is a product-logic error, not a token error.
 
 ## Friday: Faithful Code + Proof
 
