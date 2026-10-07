@@ -120,25 +120,35 @@ Recommendation:
 
 ## ProviderCard QA result
 
-The integrated ProviderCard initially failed design fidelity twice:
+The integrated ProviderCard failed design fidelity three times:
 
 1. It appeared as a launcher/overlay, which made it feel outside the app.
 2. It then appeared as a large standalone section, which made it overpower the Home screen.
+3. The 2026-09-16 A/B toggle ("Actual" / "Mejorada") defaulted to "Mejorada": a new section
+   above categories, 246px tall, with a duplicated verification chip, a redundant vouch pill,
+   and a broken 21×20px avatar.
 
-The current direction is better: it uses Vello's native provider-list anatomy. The next refinement should be placing it back into `Trusted on your block` after review, so it behaves as one provider among others rather than a highlighted QA artifact.
+**2026-10-07 (guardrail v3):** the card now renders inside `Trusted on your block` as the
+second card, through the prototype's own `AvatarVerified`, DS `Rating`, and `.nb` anatomy.
+It is 154–175px tall across its four states (native ≈ 155px) and follows the category
+filter and distance format. The A/B toggle was replaced by a state preview
+(Named vouch / Unavailable / No vouches / Quote · unverified). Details are in
+`design-fidelity-audit.md` → "v3 pass".
 
-## A/B design comparison added
+## Prototype drift found during integration
 
-The integrated prototype now includes a floating comparison control:
-
-- `Actual`: inserts the ProviderCard into the existing `Trusted on your block` list with minimal visual changes. This shows the safest baseline integration.
-- `Mejorada`: keeps the card easy to find in a `Trusted provider` section, but gives it a more intentional Vello treatment: contained size, stronger vouch hierarchy, clearer CTA, and less "raw injected card" feeling.
-
-Use `Actual` to compare against the existing provider-list pattern. Use `Mejorada` to judge the proposed improved design direction.
+- `.nb__avail` "Available" is coral (`--coral-700` on `--coral-100`, 4.10:1, fails AA at 12px)
+  while the DS `ProviderCard` uses `Badge variant="brand"` (5.70:1). The integration aligns it
+  with one removable style block (`#vlpc-ds-alignment`).
+- Native `.nb` has no `:focus-visible` style, and the DS `--focus-ring` alone is 1.52:1.
+- Native chevron (`--text-subtle` on `--surface-sunken`) is 2.82:1.
+- `.nb__walk` and "from $X" set words in JetBrains Mono, breaking the numeric-only role.
+- The DS ships a `ProviderCard` that Home doesn't use. Home's `NeighborCard` is a second,
+  diverging provider-card pattern.
 
 ## Recommended next pass
 
-1. Move ProviderCard into the existing `Trusted on your block` list permanently.
+1. ~~Move ProviderCard into the existing `Trusted on your block` list permanently.~~ Done 2026-10-07.
 2. Standardize trust rows across provider cards and responder cards.
 3. Compress Home so search/open request/provider browse are the only primary surfaces.
 4. Lighten booking by making optional fields progressive.

@@ -1,93 +1,72 @@
 import { useState } from "react";
 import { ProviderCard } from "./components/ProviderCard";
+import { DISTANCE_FORMATS, PROVIDER_STATES, STATE_LABELS } from "./providerModel";
 
-const examples = {
-  vouched: {
-    id: "provider-tomas",
-    name: "Tomás Rivera",
-    initials: "TR",
-    service: "Dog walking",
-    verificationStatus: "identity_verified",
-    rating: 4.9,
-    ratingCount: 26,
-    walkMinutes: 6,
-    pricing: { type: "fixed", amount: 18, unit: "walk", currency: "USD" },
-    vouches: [
-      { neighborName: "Priya", completedBookings: 11 },
-      { neighborName: "Denise", completedBookings: 2 },
-    ],
-  },
-  noVouch: {
-    id: "provider-maya",
-    name: "Maya Chen",
-    initials: "MC",
-    service: "House cleaning",
-    verificationStatus: "identity_verified",
-    rating: 4.7,
-    ratingCount: 8,
-    walkMinutes: 12,
-    pricing: { type: "range", minimum: 45, maximum: 70, currency: "USD" },
-    vouches: [],
-  },
-  quote: {
-    id: "provider-owen",
-    name: "Owen Price",
-    initials: "OP",
-    service: "Plastering",
-    verificationStatus: "unverified",
-    rating: null,
-    ratingCount: 0,
-    walkMinutes: 18,
-    pricing: { type: "quote" },
-    vouches: [{ neighborName: "Samira", completedBookings: 1 }],
-  },
-};
+const DISTANCE_LABELS = { walk: "Minutes walk", blocks: "Blocks", mi: "Miles" };
+
+function ToggleGroup({ legend, options, value, onChange }) {
+  return (
+    <fieldset className="demo-controls">
+      <legend>{legend}</legend>
+      {Object.entries(options).map(([key, label]) => (
+        <button
+          type="button"
+          className="state-button"
+          aria-pressed={value === key}
+          onClick={() => onChange(key)}
+          key={key}
+        >
+          {label}
+        </button>
+      ))}
+    </fieldset>
+  );
+}
 
 export function App() {
-  const [exampleKey, setExampleKey] = useState("vouched");
+  const [stateKey, setStateKey] = useState("vouched");
+  const [distanceFormat, setDistanceFormat] = useState("walk");
   const [lastRequest, setLastRequest] = useState("");
 
   return (
     <main className="demo-shell">
       <section className="demo-copy" aria-labelledby="demo-title">
-        <p className="demo-eyebrow">Design-fidelity audit</p>
+        <p className="demo-eyebrow">Design-fidelity audit · guardrail v3</p>
         <h1 id="demo-title">ProviderCard</h1>
         <p>
-          A corrected Vello component using semantic design-system tokens, explicit trust
-          signals, accessible interaction states, and a data contract that supports fixed,
-          ranged, and quote-based pricing.
+          The Vello list card for one provider. It uses the native “Trusted on your block”
+          anatomy and the same data model as the prototype integration. Verification sits on
+          the avatar, the vouch names a real neighbor, and the price copy depends on the
+          pricing type.
         </p>
 
-        <fieldset className="demo-controls">
-          <legend>Preview a component state</legend>
-          {Object.entries({ vouched: "Named vouch", noVouch: "No vouch", quote: "Quote required" }).map(
-            ([key, label]) => (
-              <button
-                type="button"
-                className="state-button"
-                aria-pressed={exampleKey === key}
-                onClick={() => {
-                  setExampleKey(key);
-                  setLastRequest("");
-                }}
-                key={key}
-              >
-                {label}
-              </button>
-            ),
-          )}
-        </fieldset>
+        <ToggleGroup
+          legend="Preview a state"
+          options={STATE_LABELS}
+          value={stateKey}
+          onChange={(key) => {
+            setStateKey(key);
+            setLastRequest("");
+          }}
+        />
+        <ToggleGroup
+          legend="Distance shown as"
+          options={Object.fromEntries(DISTANCE_FORMATS.map((f) => [f, DISTANCE_LABELS[f]]))}
+          value={distanceFormat}
+          onChange={setDistanceFormat}
+        />
 
         <p className="demo-note">
-          Compare each property with the official semantic layer—not merely with a matching
-          hexadecimal value.
+          Inside the prototype, the same data renders through Vello’s own components. Run{" "}
+          <code>npm run dev</code> and open <code>/Vello-Prototype-with-provider-card.html</code>.
         </p>
       </section>
 
       <section className="preview-panel" aria-label="ProviderCard preview">
         <ProviderCard
-          provider={examples[exampleKey]}
-          onRequest={(provider) => setLastRequest(`Request started for ${provider.name}`)}
+          provider={PROVIDER_STATES[stateKey]}
+          distanceFormat={distanceFormat}
+          onSelect={(provider) => setLastRequest(`Request started for ${provider.name}`)}
         />
         <p className="request-status" role="status" aria-live="polite">
           {lastRequest}

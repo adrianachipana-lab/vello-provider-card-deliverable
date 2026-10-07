@@ -1,99 +1,155 @@
-import { MapPin, ShieldCheck, Star } from "lucide-react";
+import { ChevronRight, Footprints, MapPin, Milestone, Star } from "lucide-react";
+import {
+  NO_VOUCH_TEXT,
+  distanceParts,
+  hasRating,
+  isVerified,
+  priceParts,
+  trustLineParts,
+} from "../providerModel";
 
-function VerifiedBadge() {
+/*
+ * Standalone mirror of the prototype's NeighborCard anatomy (.nb), driven by the shared
+ * model in src/providerModel.js. Inside the prototype, vello-provider-card-integration.js
+ * renders the same data with the prototype's real components. This file exists so the
+ * card can be reviewed and tested outside the bundled prototype.
+ */
+
+const DISTANCE_ICONS = { walk: Footprints, blocks: Milestone, mi: MapPin };
+
+// Same shape as the prototype's VerifiedMark (olive shield + cream check). Its label
+// reads "Background-checked" there. Wording pending design, see CLAUDE.md §10 Q3.
+function VerifiedMark() {
   return (
-    <span className="verified-badge">
-      <ShieldCheck size={14} strokeWidth={2} aria-hidden="true" />
-      Identity verified
+    <svg className="verified-mark" viewBox="0 0 24 24" role="img" aria-label="Identity verified">
+      <path
+        className="verified-mark__shield"
+        d="M12 2.2 4.6 5v6.1c0 4.6 3.1 7.9 7.4 9.6 4.3-1.7 7.4-5 7.4-9.6V5L12 2.2Z"
+        strokeWidth="2.4"
+        strokeLinejoin="round"
+      />
+      <path
+        className="verified-mark__check"
+        d="m8.4 12 2.5 2.5 4.7-5"
+        fill="none"
+        strokeWidth="2.1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function initials(name) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0] || "")
+    .join("")
+    .toUpperCase();
+}
+
+function Avatar({ provider }) {
+  return (
+    <span className="provider-avatar">
+      {provider.photo ? (
+        <img className="provider-avatar__img" src={provider.photo} alt="" />
+      ) : (
+        <span className="provider-avatar__fallback" aria-hidden="true">
+          {initials(provider.name)}
+        </span>
+      )}
+      {isVerified(provider) && (
+        <span className="provider-avatar__mark">
+          <VerifiedMark />
+        </span>
+      )}
     </span>
   );
 }
 
-function Rating({ value, count }) {
-  if (value == null || count === 0) {
+function Rating({ provider }) {
+  if (!hasRating(provider)) {
     return <span className="rating rating--empty">No ratings yet</span>;
   }
-
+  const filled = Math.round(provider.rating);
   return (
-    <span className="rating" aria-label={`Rated ${value.toFixed(1)} out of 5 from ${count} bookings`}>
-      <Star className="rating-icon" size={15} fill="currentColor" aria-hidden="true" />
-      <span className="data-value rating-value">{value.toFixed(1)}</span>
-      <span className="rating-count" aria-hidden="true">({count})</span>
+    <span className="rating">
+      <span className="rating__stars" role="img" aria-label={`${provider.rating} out of 5 stars`}>
+        {Array.from({ length: 5 }, (_, i) => (
+          <Star
+            key={i}
+            className={i < filled ? "rating__star" : "rating__star rating__star--empty"}
+            fill="currentColor"
+            aria-hidden="true"
+          />
+        ))}
+      </span>
+      <span className="rating__value" aria-hidden="true">
+        {provider.rating.toFixed(1)}
+      </span>
     </span>
   );
 }
 
-function TrustLine({ vouches }) {
-  if (!vouches?.length) {
-    return <p className="trust-line trust-line--empty">No recognizable neighbor vouches yet.</p>;
-  }
-
-  const [first, ...others] = vouches;
-  const bookingText =
-    first.completedBookings === 1
-      ? "once"
-      : `${first.completedBookings} times`;
-
+function TrustLine({ provider }) {
+  const trust = trustLineParts(provider.vouches, provider.name);
+  if (!trust) return <span className="trust-line trust-line--empty">{NO_VOUCH_TEXT}</span>;
   return (
-    <p className="trust-line">
-      <strong>{first.neighborName}</strong> booked this provider {bookingText}
-      {others.length > 0 && ` · ${others.length} other neighbor${others.length > 1 ? "s" : ""} vouched`}
-    </p>
+    <span className="trust-line">
+      <strong>{trust.name}</strong>
+      {trust.rest}
+    </span>
   );
 }
 
 function Price({ pricing }) {
-  if (pricing.type === "quote") {
-    return <span className="price price--text">Quote required</span>;
-  }
-
-  if (pricing.type === "range") {
-    return (
-      <span className="price" aria-label={`From ${pricing.minimum} to ${pricing.maximum} dollars`}>
-        ${pricing.minimum}–${pricing.maximum}
-      </span>
-    );
-  }
-
+  const price = priceParts(pricing);
+  if (price.text) return <span className="price price--text">{price.text}</span>;
   return (
-    <span className="price" aria-label={`${pricing.amount} dollars per ${pricing.unit}`}>
-      ${pricing.amount}<span className="price-unit">/{pricing.unit}</span>
+    <span className="price">
+      <span className="price__value">{price.value}</span> <span className="price__unit">{price.unit}</span>
     </span>
   );
 }
 
-export function ProviderCard({ provider, onRequest }) {
+function Distance({ provider, format }) {
+  const Icon = DISTANCE_ICONS[format];
+  const { value, words } = distanceParts(provider, format);
   return (
-    <article className="provider-card" aria-labelledby={`${provider.id}-name`}>
-      <div className="provider-main">
-        <div className="provider-avatar" aria-hidden="true">{provider.initials}</div>
+    <span className="distance">
+      <Icon className="distance__icon" aria-hidden="true" />
+      <span className="distance__value">{value}</span> {words}
+    </span>
+  );
+}
 
-        <div className="provider-details">
-          <div className="provider-heading">
-            <h2 id={`${provider.id}-name`}>{provider.name}</h2>
-            {provider.verificationStatus === "identity_verified" && <VerifiedBadge />}
-          </div>
-          <p className="provider-service">{provider.service}</p>
-
-          <div className="provider-meta">
-            <Rating value={provider.rating} count={provider.ratingCount} />
-            <span className="distance">
-              <MapPin size={15} aria-hidden="true" />
-              <span className="data-value">{provider.walkMinutes} min</span> walk
+export function ProviderCard({ provider, distanceFormat = "walk", onSelect }) {
+  return (
+    <button type="button" className="provider-card" onClick={() => onSelect?.(provider)}>
+      <Avatar provider={provider} />
+      <span className="provider-card__body">
+        <span className="provider-card__top">
+          <span className="provider-card__name">{provider.name}</span>
+          {provider.available && (
+            <span className="availability">
+              <span className="availability__dot" aria-hidden="true" />
+              Available
             </span>
-          </div>
-        </div>
-
+          )}
+        </span>
+        <span className="provider-card__bio">{provider.bio}</span>
+        <TrustLine provider={provider} />
         <Price pricing={provider.pricing} />
-      </div>
-
-      <div className="trust-section">
-        <TrustLine vouches={provider.vouches} />
-      </div>
-
-      <button className="request-button" type="button" onClick={() => onRequest?.(provider)}>
-        Request {provider.service.toLowerCase()}
-      </button>
-    </article>
+        <span className="provider-card__meta">
+          <Distance provider={provider} format={distanceFormat} />
+          <Rating provider={provider} />
+        </span>
+      </span>
+      <span className="provider-card__tap" aria-hidden="true">
+        <ChevronRight />
+      </span>
+    </button>
   );
 }
