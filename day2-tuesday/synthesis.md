@@ -49,7 +49,7 @@ assumed, not proven.
 
 ### 3. Availability and distance are timing signals, not trust signals
 
-**Support:** The NeighborCard shows "Available" as a coral badge and "6 min walk"
+**Support:** The NeighborCard shows "Available" as a green badge and "6 min walk"
 in a pill with footprints. These are not trust indicators — they answer "can I
 get this service now?" and "how far away is this person?" The prototype treats
 them as separate from the rating and verified mark.

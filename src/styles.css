@@ -159,7 +159,7 @@ button { font: inherit; }
   padding: 3px 9px;
   border-radius: var(--radius-pill);
   background: var(--surface-brand-tint);
-  color: var(--brand-primary);
+  color: var(--text-brand);
   font-size: 12px;
   font-weight: 600;
 }
@@ -168,7 +168,7 @@ button { font: inherit; }
   width: 6px;
   height: 6px;
   border-radius: var(--radius-pill);
-  background: var(--brand-primary);
+  background: var(--text-brand);
 }
 .nb__bio {
   margin: 6px 0 0;
@@ -280,10 +280,10 @@ button { font: inherit; }
 .profile-available {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 3px 10px; border-radius: var(--radius-pill);
-  background: var(--surface-brand-tint); color: var(--brand-primary);
+  background: var(--surface-brand-tint); color: var(--text-brand);
   font-size: 12px; font-weight: 600;
 }
-.profile-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--brand-primary); }
+.profile-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--text-brand); }
 .profile-stats {
   display: flex; gap: 16px; margin-top: 20px; padding: 14px 0;
   border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);

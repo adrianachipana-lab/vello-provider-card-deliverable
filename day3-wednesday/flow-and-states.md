@@ -138,7 +138,7 @@ Submit booking request
 | **Neighbor list loaded** | Home mounts | `GET /neighbors?neighborhood={id}` -> `200 [Neighbor[]]` | Render neighbor cards in "Trusted on your block" |
 | **Neighbor list empty** | No neighbors in neighborhood | `200 []` | Empty state: "No neighbors nearby yet" |
 | **Neighbor list error** | Network failure | `5xx` or timeout | Error state: "Could not load neighbors. Retry." |
-| **Neighbor available** | `available: true` | Part of neighbor payload | Coral "Available" badge via `nb__avail` |
+| **Neighbor available** | `available: true` | Part of neighbor payload | Green "Available" badge via `nb__avail` (`--text-brand` on `--surface-brand-tint`, 5.70:1 contrast) |
 | **Neighbor unavailable** | `available: false` | Part of neighbor payload | No badge; card still tappable |
 | **Neighbor featured** | `featured: true` | Part of neighbor payload | `nb--featured` class adds emphasis |
 | **Neighbor profile loaded** | Tap NeighborCard | `GET /neighbors/{id}` -> `200 Neighbor` | Full neighbor profile with services and availability |
